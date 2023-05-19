@@ -11,20 +11,6 @@ type Error interface {
 }
 
 var (
-	ErrTargetIsNotGrpcStandardStatus = &Unexpected{
-		Id:             "blunder:target_is_not_grpc_standard_status",
-		HttpStatusCode: 500,
-		GrpcStatusCode: 13,
-		ErrorCode:      "TARGET_IS_NOT_GRPC_STANDARD_STATUS",
-		Message:        "[blunder error]: Given target error is not a grpc standard status error",
-	}
-	ErrComparativeIsNotBlunderError = &Unexpected{
-		Id:             "blunder:comparative_is_not_blunder_error",
-		HttpStatusCode: 500,
-		GrpcStatusCode: 13,
-		ErrorCode:      "COMPARATIVE_IS_NOT_BLUNDER_ERROR",
-		Message:        "[blunder error]: Some of the given comparative error is not a blunder error, specifying FromGrpc is not allowed",
-	}
 	ErrUndefined = &Unexpected{
 		Id:             "undefined_error",
 		HttpStatusCode: 500,
@@ -35,8 +21,7 @@ var (
 )
 
 var (
-	_ Error = ErrTargetIsNotGrpcStandardStatus
-	_ Error = ErrComparativeIsNotBlunderError
+	_ Error = ErrUndefined
 )
 
 type Unexpected struct {
