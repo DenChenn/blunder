@@ -1,0 +1,23 @@
+discord_alert_enable: false
+
+details:
+- package: example
+  errors:
+    - code: ErrExampleNotFound
+      http_status_code: 404
+      grpc_status_code: 5
+      message: "Example not found"
+    - code: ErrExampleAlreadyExists
+      http_status_code: 409
+      grpc_status_code: 6
+      message: "Example already exists"
+- package: example2
+  errors:
+    - code: ErrExample2NotFound
+      http_status_code: 404
+      grpc_status_code: 5
+      message: "Example2 not found"
+    - code: ErrExample2AlreadyExists
+      http_status_code: 409
+      grpc_status_code: 6
+      message: "Example2 already exists"

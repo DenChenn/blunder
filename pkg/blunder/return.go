@@ -1,26 +1,23 @@
 package blunder
 
 import (
-	"github.com/DenChenn/blunder/pkg/options"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-func (mr *MatchResult) Return(opt *options.ReturnOption) error {
-	// TODO: logging, alerting, etc.
+func (mr *MatchResult) Return() error {
 	return mr.Result
 }
 
-func (mr *MatchResult) ReturnForGin(ginContext *gin.Context, opt *options.ReturnOption) {
+func (mr *MatchResult) ReturnForGin(ginContext *gin.Context) {
 	ginContext.JSON(
 		mr.Result.GetHttpStatusCode(),
 		mr.Result,
 	)
 }
 
-func (mr *MatchResult) ReturnForGqlgen(opt *options.ReturnOption) error {
-	panic("implement me")
-}
-
-func (mr *MatchResult) ReturnForGrpc(opt *options.ReturnOption) error {
-	panic("implement me")
+func (mr *MatchResult) ReturnForGrpc() error {
+	st := status.New(codes.Code(mr.Result.GetGrpcStatusCode()), mr.Result.GetId())
+	return st.Err()
 }

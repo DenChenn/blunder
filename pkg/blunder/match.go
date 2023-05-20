@@ -2,7 +2,6 @@ package blunder
 
 import (
 	"errors"
-	"github.com/DenChenn/blunder/pkg/options"
 	"google.golang.org/grpc/status"
 )
 
@@ -15,58 +14,57 @@ func (mr *MatchResult) GetIsMatched() bool {
 	return mr.IsMatched
 }
 
-func MatchOne(target error, comp error, output Error, opt *options.MatchOption) *MatchResult {
+func (mr *MatchResult) Err() Error {
+	return mr.Result
+}
+
+func Match(happened error, is error, shouldReturn Error) *MatchResult {
 	matched := &MatchResult{
 		IsMatched: true,
-		Result:    output,
+		Result:    shouldReturn,
 	}
 
-	// if option is set to FromGrpc, then check if the target error is grpc standard status
-	if opt != nil && opt.FromGrpc != nil && *opt.FromGrpc {
-		st, ok := status.FromError(target)
-		e, isError := comp.(Error)
-		if ok && isError {
-			if e.GetId() == st.Message() {
-				return matched
-			}
+	// check if the error is from grpc standard status
+	st, ok := status.FromError(happened)
+	e, isError := is.(Error)
+	if ok && isError {
+		if e.GetId() == st.Message() {
+			return matched
 		}
 	}
 
-	if errors.Is(target, comp) {
+	if errors.Is(happened, is) {
 		return matched
 	}
 
 	return &MatchResult{
 		IsMatched: false,
-		Result:    ErrUndefined.WithCustomMessage(target.Error()),
+		Result:    ErrUndefined.WithCustomMessage(happened.Error()),
 	}
 }
 
-func MatchMany(target error, comp *Map, opt *options.MatchOption) *MatchResult {
-	isFromGrpc := opt != nil && opt.FromGrpc != nil && *opt.FromGrpc
-
-	for k, v := range comp.detail {
+func MatchCondition(happened error, match *Condition) *MatchResult {
+	for k, v := range match.detail {
 		matched := &MatchResult{
 			IsMatched: true,
 			Result:    v,
 		}
 
-		if isFromGrpc {
-			st, ok := status.FromError(target)
-			e, isError := k.(Error)
-			if ok && isError {
-				if e.GetId() == st.Message() {
-					return matched
-				}
+		// check if the error is from grpc standard status
+		st, ok := status.FromError(happened)
+		e, isError := k.(Error)
+		if ok && isError {
+			if e.GetId() == st.Message() {
+				return matched
 			}
 		}
 
-		if errors.Is(target, k) {
+		if errors.Is(happened, k) {
 			return matched
 		}
 	}
 	return &MatchResult{
 		IsMatched: false,
-		Result:    ErrUndefined.WithCustomMessage(target.Error()),
+		Result:    ErrUndefined.WithCustomMessage(happened.Error()),
 	}
 }
