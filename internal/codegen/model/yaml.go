@@ -1,8 +1,7 @@
 package model
 
 type Blunder struct {
-	DiscordAlertEnable bool     `yaml:"discord_alert_enable"`
-	Details            []Detail `yaml:"details"`
+	Details []Detail `yaml:"details"`
 }
 
 type Detail struct {

@@ -14,8 +14,6 @@ const (
 	GeneratedDirName          = "generated"
 	ErrorFileName             = "error.go"
 	ErrorFileTemplateFileName = "error.go.tmpl"
-	DiscordBotTokenEnvName    = "DISCORD_BOT_TOKEN"
-	DiscordChannelIdEnvName   = "DISCORD_CHANNEL_ID"
 )
 
 var Gen = &cli.Command{
@@ -36,13 +34,6 @@ var Gen = &cli.Command{
 		var blunderConfig model.Blunder
 		if err := yaml.Unmarshal(f, &blunderConfig); err != nil {
 			return err
-		}
-
-		// check alert requirement
-		if blunderConfig.DiscordAlertEnable {
-			if err := checkDiscordAlertEnable(); err != nil {
-				return err
-			}
 		}
 
 		generatedRootPath := filepath.Join(blunderRootPath, GeneratedDirName)
@@ -72,16 +63,4 @@ var Gen = &cli.Command{
 
 		return nil
 	},
-}
-
-func checkDiscordAlertEnable() error {
-	_, ok := os.LookupEnv(DiscordBotTokenEnvName)
-	if !ok {
-		return errors.New("env variable: DISCORD_BOT_TOKEN should be specified, or disable discord alert in blunder.yaml")
-	}
-	_, ok = os.LookupEnv(DiscordChannelIdEnvName)
-	if !ok {
-		return errors.New("env variable: DISCORD_CHANNEL_ID should be specified, or disable discord alert in blunder.yaml")
-	}
-	return nil
 }

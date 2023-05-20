@@ -18,13 +18,6 @@ var (
 		ErrorCode:      "UNDEFINED_ERROR",
 		Message:        "Unexpected error happened.",
 	}
-	ErrDiscordAlertFailed = &Unexpected{
-		Id:             "discord_alert_failed",
-		HttpStatusCode: 500,
-		GrpcStatusCode: 13,
-		ErrorCode:      "DISCORD_ALERT_FAILED",
-		Message:        "Failed to send alert to discord.",
-	}
 )
 
 var (
