@@ -18,7 +18,6 @@ const BlunderYamlFileName = "blunder.yaml"
 
 func LocateBlunderYamlPath() string {
 	root := GetRootPath()
-	fmt.Println(root)
 	location := ""
 	if err := filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
