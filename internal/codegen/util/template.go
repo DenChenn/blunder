@@ -2,12 +2,11 @@ package util
 
 import (
 	"fmt"
-	"github.com/DenChenn/blunder/internal/codegen/model"
 	"os"
 	"text/template"
 )
 
-func Generate(path string, templatePath string, data *model.Detail) error {
+func Generate(path string, templatePath string, data any) error {
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
 		return err

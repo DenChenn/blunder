@@ -1,0 +1,11 @@
+details:
+{{- range .Details }}
+- package: {{ .Package }}
+  errors:
+    {{- range .Errors}}
+    - code: {{ .Code }}
+      http_status_code: {{ .HttpStatusCode }}
+      grpc_status_code: {{ .GrpcStatusCode }}
+      message: {{ .Message }}
+    {{- end }}
+{{- end }}

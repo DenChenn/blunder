@@ -14,8 +14,8 @@ const (
 var Init = &cli.Command{
 	Name:  "init",
 	Usage: "generate error",
-	Action: func(context *cli.Context) error {
-		initPath := context.Args().Get(0)
+	Action: func(cCtx *cli.Context) error {
+		initPath := cCtx.Args().Get(0)
 		if initPath == "" {
 			return errors.New("you should specify the path to init")
 		}
