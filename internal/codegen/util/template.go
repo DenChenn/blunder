@@ -12,12 +12,16 @@ func Generate(path string, templatePath string, data any) error {
 		return err
 	}
 
-	mkErr := os.MkdirAll(GetFileDirPath(path), os.ModePerm)
+	mkErr := os.MkdirAll(GetFileDirPath(path), 0o755)
 	if mkErr != nil {
 		fmt.Println(mkErr)
 	}
 	f, err := os.Create(path)
 	if err != nil {
+		return err
+	}
+
+	if err := os.Chmod(path, 0o644); err != nil {
 		return err
 	}
 
