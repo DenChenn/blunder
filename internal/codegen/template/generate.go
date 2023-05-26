@@ -11,6 +11,7 @@ import (
 //go:embed *.tmpl
 var codegenTemplates embed.FS
 
+// Generate generates a file from a template
 func Generate(path string, templateName string, data any) error {
 	t, err := template.ParseFS(codegenTemplates, templateName)
 	if err != nil {

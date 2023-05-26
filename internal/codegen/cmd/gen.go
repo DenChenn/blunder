@@ -14,7 +14,7 @@ import (
 
 var Gen = &cli.Command{
 	Name:  "gen",
-	Usage: "generate all errors",
+	Usage: "generate all errors according to blunder.yaml",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{
 			Name:    "complete",
@@ -93,7 +93,7 @@ var Gen = &cli.Command{
 		for _, detail := range blunderConfig.Details {
 			errorFilePath := filepath.Join(generatedRootPath, detail.Package, constant.ErrorFileName)
 
-			// generate id for this error
+			// generate id for this error according to file path + code
 			for i := range detail.Errors {
 				id := util.GetId(errorFilePath + detail.Errors[i].Code)
 				detail.Errors[i].Id = id
@@ -109,6 +109,7 @@ var Gen = &cli.Command{
 	},
 }
 
+// clearGeneratedFolder remove old generated folder and create a new one
 func clearGeneratedFolder(generatedRootPath string) {
 	// remove old generated folder
 	_ = os.RemoveAll(generatedRootPath)
@@ -116,6 +117,7 @@ func clearGeneratedFolder(generatedRootPath string) {
 	_ = os.MkdirAll(generatedRootPath, os.ModePerm)
 }
 
+// checkAllErrorCodeIsProvided check if all error code is provided
 func checkAllErrorCodeIsProvided(b *model.Blunder) bool {
 	for _, detail := range b.Details {
 		for _, e := range detail.Errors {
@@ -127,6 +129,7 @@ func checkAllErrorCodeIsProvided(b *model.Blunder) bool {
 	return true
 }
 
+// determineWhichToComplete determine which error detail to complete
 func determineWhichToComplete(b *model.Blunder) (bool, map[string]model.Index, []string) {
 	which := make(map[string]model.Index)
 	whichErrorCodes := make([]string, 0)

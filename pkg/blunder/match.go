@@ -18,6 +18,7 @@ func (mr *MatchResult) Err() Error {
 	return mr.Result
 }
 
+// Match is a function to match the error with the given condition
 func Match(happened error, is error, shouldReturn Error) *MatchResult {
 	matched := &MatchResult{
 		IsMatched: true,
@@ -43,6 +44,7 @@ func Match(happened error, is error, shouldReturn Error) *MatchResult {
 	}
 }
 
+// MatchCondition is a function to match the error with the given condition
 func MatchCondition(happened error, match *Condition) *MatchResult {
 	for k, v := range match.detail {
 		matched := &MatchResult{

@@ -10,7 +10,7 @@ import (
 
 var Init = &cli.Command{
 	Name:  "init",
-	Usage: "generate error",
+	Usage: "initiate blunder configuration file and module structure",
 	Action: func(cCtx *cli.Context) error {
 		initPath := cCtx.Args().Get(0)
 		if initPath == "" {

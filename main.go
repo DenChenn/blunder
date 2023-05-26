@@ -10,7 +10,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name:  "blunder",
-		Usage: "generate errors",
+		Usage: "a modern golang module for error handling",
 	}
 
 	app.Commands = []*cli.Command{

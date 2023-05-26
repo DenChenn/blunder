@@ -15,6 +15,7 @@ const (
 	groupSeparator = "#"
 )
 
+// CompleteErrorDetail completes the error detail with GPT-3
 func CompleteErrorDetail(errorCodes []string) ([]*model.ErrorDescription, error) {
 	errorString := strings.Join(errorCodes[:], "#")
 	content := formatRequestString(errorString)
