@@ -1,5 +1,6 @@
 # Blunder
 ![GitHub](https://img.shields.io/github/license/DenChenn/blunder)
+![Go Report Card](https://goreportcard.com/badge/github.com/DenChenn/blunder)
 
 ## What is Blunder?
 Blunder is a simple, gpt-based and easy-to-use error handling package for golang.
