@@ -1,18 +1,23 @@
-package util
+package template
 
 import (
+	"embed"
 	"fmt"
+	"github.com/DenChenn/blunder/internal/codegen/util"
 	"os"
 	"text/template"
 )
 
-func Generate(path string, templatePath string, data any) error {
-	t, err := template.ParseFiles(templatePath)
+//go:embed *.tmpl
+var codegenTemplates embed.FS
+
+func Generate(path string, templateName string, data any) error {
+	t, err := template.ParseFS(codegenTemplates, templateName)
 	if err != nil {
 		return err
 	}
 
-	mkErr := os.MkdirAll(GetFileDirPath(path), 0o755)
+	mkErr := os.MkdirAll(util.GetFileDirPath(path), 0o755)
 	if mkErr != nil {
 		fmt.Println(mkErr)
 	}

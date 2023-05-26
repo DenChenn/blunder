@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"github.com/DenChenn/blunder/internal/codegen/template"
 	"github.com/DenChenn/blunder/internal/codegen/util"
 	"github.com/urfave/cli/v2"
 	"path/filepath"
@@ -21,11 +22,7 @@ var Init = &cli.Command{
 		}
 
 		blunderYamlPath := filepath.Join(initPath, "errors", util.BlunderYamlFileName)
-		templateFilePath, err := util.GetTemplatePath(BlunderYamlTemplateFileName)
-		if err != nil {
-			return err
-		}
-		if err := util.Generate(blunderYamlPath, templateFilePath, nil); err != nil {
+		if err := template.Generate(blunderYamlPath, BlunderYamlTemplateFileName, nil); err != nil {
 			return err
 		}
 

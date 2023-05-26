@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/DenChenn/blunder/internal/codegen/gpt"
 	"github.com/DenChenn/blunder/internal/codegen/model"
+	"github.com/DenChenn/blunder/internal/codegen/template"
 	"github.com/DenChenn/blunder/internal/codegen/util"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -84,12 +85,7 @@ var Gen = &cli.Command{
 			}
 
 			// generate blunder.yaml again to record the completion
-			templatePath, err := util.GetTemplatePath(GenerateBlunderYamlTemplateFileName)
-			if err != nil {
-				return err
-			}
-
-			if err := util.Generate(blunderPath, templatePath, &blunderConfig); err != nil {
+			if err := template.Generate(blunderPath, GenerateBlunderYamlTemplateFileName, &blunderConfig); err != nil {
 				return err
 			}
 		}
@@ -99,10 +95,6 @@ var Gen = &cli.Command{
 
 		for _, detail := range blunderConfig.Details {
 			errorFilePath := filepath.Join(generatedRootPath, detail.Package, ErrorFileName)
-			templateFilePath, err := util.GetTemplatePath(ErrorFileTemplateFileName)
-			if err != nil {
-				return err
-			}
 
 			// generate id for this error
 			for i := range detail.Errors {
@@ -110,7 +102,7 @@ var Gen = &cli.Command{
 				detail.Errors[i].Id = id
 			}
 
-			if err := util.Generate(errorFilePath, templateFilePath, &detail); err != nil {
+			if err := template.Generate(errorFilePath, ErrorFileTemplateFileName, &detail); err != nil {
 				return err
 			}
 		}
