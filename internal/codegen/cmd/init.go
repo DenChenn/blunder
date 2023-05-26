@@ -1,15 +1,11 @@
 package cmd
 
 import (
-	"errors"
 	"github.com/DenChenn/blunder/internal/codegen/template"
-	"github.com/DenChenn/blunder/internal/codegen/util"
+	"github.com/DenChenn/blunder/internal/constant"
+	"github.com/DenChenn/blunder/internal/util"
 	"github.com/urfave/cli/v2"
 	"path/filepath"
-)
-
-const (
-	BlunderYamlTemplateFileName = "blunder.yaml.tmpl"
 )
 
 var Init = &cli.Command{
@@ -18,13 +14,15 @@ var Init = &cli.Command{
 	Action: func(cCtx *cli.Context) error {
 		initPath := cCtx.Args().Get(0)
 		if initPath == "" {
-			return errors.New("you should specify the path to init")
+			return util.PrintErrAndReturn("you should specify the path to init")
 		}
 
-		blunderYamlPath := filepath.Join(initPath, "errors", util.BlunderYamlFileName)
-		if err := template.Generate(blunderYamlPath, BlunderYamlTemplateFileName, nil); err != nil {
-			return err
+		s := util.PrintLoading("generating blunder.yaml ...", "blunder.yaml is generated successfully")
+		blunderYamlPath := filepath.Join(initPath, "errors", constant.BlunderYamlFileName)
+		if err := template.Generate(blunderYamlPath, constant.BlunderYamlTemplateFileName, nil); err != nil {
+			return util.PrintErrAndReturn(err.Error())
 		}
+		s.Stop()
 
 		return nil
 	},

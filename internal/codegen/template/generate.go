@@ -3,7 +3,7 @@ package template
 import (
 	"embed"
 	"fmt"
-	"github.com/DenChenn/blunder/internal/codegen/util"
+	"github.com/DenChenn/blunder/internal/util"
 	"os"
 	"text/template"
 )

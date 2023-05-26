@@ -1,22 +1,15 @@
 package cmd
 
 import (
-	"errors"
 	"github.com/DenChenn/blunder/internal/codegen/gpt"
 	"github.com/DenChenn/blunder/internal/codegen/model"
 	"github.com/DenChenn/blunder/internal/codegen/template"
-	"github.com/DenChenn/blunder/internal/codegen/util"
+	"github.com/DenChenn/blunder/internal/constant"
+	"github.com/DenChenn/blunder/internal/util"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
-)
-
-const (
-	GeneratedDirName                    = "generated"
-	ErrorFileName                       = "error.go"
-	ErrorFileTemplateFileName           = "error.go.tmpl"
-	GenerateBlunderYamlTemplateFileName = "gen_blunder.yaml.tmpl"
 )
 
 var Gen = &cli.Command{
@@ -31,25 +24,27 @@ var Gen = &cli.Command{
 		},
 	},
 	Action: func(cCtx *cli.Context) error {
+		sGen := util.PrintLoading("generating all errors...", "all errors are generated successfully")
+
 		blunderPath := util.LocateBlunderYamlPath()
 		if blunderPath == "" {
-			return errors.New("blunder.yaml not found, please init the project first")
+			return util.PrintErrAndReturn("blunder.yaml not found, please init the project first")
 		}
 		blunderRootPath := util.GetFileDirPath(blunderPath)
 
 		f, err := os.ReadFile(blunderPath)
 		if err != nil {
-			return err
+			return util.PrintErrAndReturn(err.Error())
 		}
 
 		var blunderConfig model.Blunder
 		if err := yaml.Unmarshal(f, &blunderConfig); err != nil {
-			return err
+			return util.PrintErrAndReturn(err.Error())
 		}
 
 		// check all error code is provided
 		if !checkAllErrorCodeIsProvided(&blunderConfig) {
-			return errors.New("in blunder.yaml, all error code must be provided")
+			return util.PrintErrAndReturn("in blunder.yaml, all error code must be provided")
 		}
 
 		// complete error detail with gpt3
@@ -58,14 +53,15 @@ var Gen = &cli.Command{
 			// check if user provide gpt3 api token
 			_, exist := os.LookupEnv("OPENAI_API_TOKEN")
 			if !exist {
-				return errors.New("OPENAI_API_TOKEN not found, please export it with your own openai api token")
+				return util.PrintErrAndReturn("OPENAI_API_TOKEN not found, please export with your own openai api token")
 			}
 
+			sComplete := util.PrintLoading("auto-completing error detail with gpt3...", "error detail is completed successfully")
 			hasSomethingToComplete, indexMap, errorCodes := determineWhichToComplete(&blunderConfig)
 			if hasSomethingToComplete {
 				completed, err := gpt.CompleteErrorDetail(errorCodes)
 				if err != nil {
-					return err
+					return util.PrintErrAndReturn(err.Error())
 				}
 
 				for _, ec := range completed {
@@ -85,16 +81,17 @@ var Gen = &cli.Command{
 			}
 
 			// generate blunder.yaml again to record the completion
-			if err := template.Generate(blunderPath, GenerateBlunderYamlTemplateFileName, &blunderConfig); err != nil {
-				return err
+			if err := template.Generate(blunderPath, constant.GenerateBlunderYamlTemplateFileName, &blunderConfig); err != nil {
+				return util.PrintErrAndReturn(err.Error())
 			}
+			sComplete.Stop()
 		}
 
-		generatedRootPath := filepath.Join(blunderRootPath, GeneratedDirName)
+		generatedRootPath := filepath.Join(blunderRootPath, constant.GeneratedDirName)
 		clearGeneratedFolder(generatedRootPath)
 
 		for _, detail := range blunderConfig.Details {
-			errorFilePath := filepath.Join(generatedRootPath, detail.Package, ErrorFileName)
+			errorFilePath := filepath.Join(generatedRootPath, detail.Package, constant.ErrorFileName)
 
 			// generate id for this error
 			for i := range detail.Errors {
@@ -102,11 +99,12 @@ var Gen = &cli.Command{
 				detail.Errors[i].Id = id
 			}
 
-			if err := template.Generate(errorFilePath, ErrorFileTemplateFileName, &detail); err != nil {
-				return err
+			if err := template.Generate(errorFilePath, constant.ErrorFileTemplateFileName, &detail); err != nil {
+				return util.PrintErrAndReturn(err.Error())
 			}
 		}
 
+		sGen.Stop()
 		return nil
 	},
 }

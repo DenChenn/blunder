@@ -36,8 +36,6 @@ func CompleteErrorDetail(errorCodes []string) ([]*model.ErrorDescription, error)
 		return nil, fmt.Errorf("ChatCompletion error: %v\n", err)
 	}
 
-	fmt.Println(resp.Choices[0].Message.Content)
-
 	groups := strings.Split(resp.Choices[0].Message.Content, groupSeparator)
 	if len(groups) != len(errorCodes) {
 		return nil, fmt.Errorf("response with wrong format from GPT-3 in group")
