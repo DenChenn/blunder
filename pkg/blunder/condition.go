@@ -21,12 +21,12 @@ func NewCondition(givenCondition ...map[error]Error) *Condition {
 	}
 }
 
-func (m *Condition) Add(is error, shouldReturn Error) *Condition {
+func (m *Condition) OneToOne(is error, shouldReturn Error) *Condition {
 	m.detail[is] = shouldReturn
 	return m
 }
 
-func (m *Condition) AddMany(isThese []error, shouldReturn Error) *Condition {
+func (m *Condition) ManyToOne(isThese []error, shouldReturn Error) *Condition {
 	for _, is := range isThese {
 		m.detail[is] = shouldReturn
 	}

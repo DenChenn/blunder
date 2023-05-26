@@ -10,6 +10,14 @@ type Error interface {
 	WithCustomMessage(msg string) Error
 }
 
+type Unexpected struct {
+	Id             string `json:"id"`
+	HttpStatusCode int    `json:"http_status_code"`
+	GrpcStatusCode int    `json:"grpc_status_code"`
+	ErrorCode      string `json:"error_code"`
+	Message        string `json:"message"`
+}
+
 var (
 	ErrUndefined = &Unexpected{
 		Id:             "undefined_error",
@@ -18,19 +26,8 @@ var (
 		ErrorCode:      "UNDEFINED_ERROR",
 		Message:        "Unexpected error happened.",
 	}
-)
-
-var (
 	_ Error = ErrUndefined
 )
-
-type Unexpected struct {
-	Id             string `json:"id"`
-	HttpStatusCode int    `json:"http_status_code"`
-	GrpcStatusCode int    `json:"grpc_status_code"`
-	ErrorCode      string `json:"error_code"`
-	Message        string `json:"message"`
-}
 
 func (e *Unexpected) Error() string {
 	return e.Message
