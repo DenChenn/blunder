@@ -57,7 +57,7 @@ This is a basic example for using blunder : )
 ```go
 if err := pgx.QueryRow().Scan(); err != nil {
   if errors.Is(err, pgx.ErrNoRows) {
-    return nil, a.Err1 
+    return nil, a.Err1
   }
   return nil, err 
 }
@@ -67,9 +67,9 @@ if err := pgx.QueryRow().Scan(); err != nil {
 
 ```go
 if err := pgx.QueryRow().Scan(); err != nil {
-	return blunder.
-		Match(err, pgx.ErrNoRows, a.Err1).
-		Return() 
+  return blunder.
+    Match(err, pgx.ErrNoRows, a.Err1).
+    Return() 
 }
 ```
 
@@ -89,28 +89,27 @@ Moreover, with condition technique, blunder can handle more complicated error ma
 ```go
 // server side
 if err := someFunction(); err != nil {
-	if errors.Is(err, lowerLayerErr1) || errors.Is(err, lowerLayerErr2) {
-		return nil, status.Error(codes.NotFound, a.Err1.Error())
-	} errors.Is(err, lowerLayerErr3) {
-		return nil, status.Error(codes.NotFound, a.Err2.Error())
-	}
-	// ...some more cases
-	return nil, status.Error(codes.Internal, err.Error())
+  if errors.Is(err, lowerLayerErr1) || errors.Is(err, lowerLayerErr2) {
+    return nil, status.Error(codes.NotFound, a.Err1.Error())
+  } errors.Is(err, lowerLayerErr3) {
+    return nil, status.Error(codes.NotFound, a.Err2.Error())
+  } 
+  // ...some more cases 
+  return nil, status.Error(codes.Internal, err.Error())
 }
 
 // client side
-if err := rpc.Call(); err != nil {
-	if s, ok := status.FromError(unknownErr); ok {
-		switch s.Message() {
-		case a.Err1.Error():
+if err := rpc.Call(); err != nil { 
+  if s, ok := status.FromError(unknownErr); ok {
+    switch s.Message() {
+    case a.Err1.Error():
       return b.Err1
-	  case b.Err2.Error():
+    case b.Err2.Error():
       return b.Err2
-	  // ...some more cases
-	  default:
-		  return err // <- undefined
+    default:
+      return err // <- undefined
     }
-	}
+  }
 }
 ```
 
@@ -119,22 +118,22 @@ if err := rpc.Call(); err != nil {
 ```go
 
 if err := someFunction(); err != nil {
-    cond := blunder.NewCondition().
-		    ManyToOne([lowerLayerErr1, lowerLayerErr2], a.Err1).
-		    OneToOne(lowerLayerErr3, a.Err2) // some more cases
-    return blunder.
+  cond := blunder.NewCondition().
+    ManyToOne([lowerLayerErr1, lowerLayerErr2], a.Err1).
+    OneToOne(lowerLayerErr3, a.Err2) // some more cases
+  // return blunder.
         MatchCondition(err, cond).
         ReturnForGrpc()
 }
 
 // client side
 if err := rpc.Call(); err != nil {
-    cond := blunder.NewCondition().
-        OneToOne(a.Err1, b.Err1).
-        OneToOne(a.Err2, b.Err2) // some more cases
-    return blunder.
-        MatchCondition(err, cond).
-        Return()
+  cond := blunder.NewCondition().
+    OneToOne(a.Err1, b.Err1).
+    OneToOne(a.Err2, b.Err2) // some more cases
+  return blunder.
+    MatchCondition(err, cond).
+    Return()
 }
 ```
 
@@ -153,8 +152,8 @@ You can still use `MatchCondition` to handle errors that requiring the same oper
 ```go
 if err := someFunction(); err != nil {
   if errors.Is(err, Err1) || errors.Is(err, Err2) {
-	  doSomething()
-    return nil, a.Err1 
+    doSomething()
+    return nil, a.Err1
   } else if errors.Is(err, Err3) {
     doOtherthing() // no returning
   }
@@ -167,15 +166,14 @@ if err := someFunction(); err != nil {
 ```go
 
 if err := someFunction(); err != nil {
-	cond := blunder.NewCondition().ManyToOne([Err1, Err2], a.Err1)
-   if blunder.MatchCondition(err, cond).GetIsMatched() {
-	   doSomething()
-	   return nil, a.Err1
-   } else if blunder.Match(err, Err2).GetIsMatched() {
-      doOtherthing()
-   }
-   return nil, err
+  cond := blunder.NewCondition().ManyToOne([Err1, Err2], a.Err1)
+  if blunder.MatchCondition(err, cond).GetIsMatched() {
+    doSomething()
+    return nil, a.Err1
+  } else if blunder.Match(err, Err2).GetIsMatched() {
+    doOtherthing()
   }
+  return nil, blunder.ErrUndefined
 }
 ```
 
@@ -185,4 +183,4 @@ if err := someFunction(); err != nil {
 ## Return framework support
 - [x] Gin
 - [x] Grpc
-- [ ] Gqlgen 
+- [ ] Gqlgen
