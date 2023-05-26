@@ -46,7 +46,7 @@ details:
       #...
 ```
 
-### Case: `alayer` is a layer of dao, responsible for data access.
+### Case: with errors from other packages 
 This is a basic example for using blunder : )
 
 <table>
@@ -76,7 +76,7 @@ if err := pgx.QueryRow().Scan(); err != nil {
 </td></tr>
 </tbody></table>
 
-### Case: `blayer` is a layer of grpc client, and `alayer` is a layer of grpc server.
+### Case: across grpc 
 This case is a little bit complicated, but blunder can handle it easily.  
 Handling across layers is a common case in microservice architecture, and blunder is designed for this case.
 Moreover, with condition technique, blunder can handle more complicated error mapping cases.
@@ -104,7 +104,7 @@ if err := rpc.Call(); err != nil {
     switch s.Message() {
     case a.Err1.Error():
       return b.Err1
-    case b.Err2.Error():
+    case a.Err2.Error():
       return b.Err2
     default:
       return err // <- undefined
@@ -116,12 +116,12 @@ if err := rpc.Call(); err != nil {
 </td><td>
 
 ```go
-
+// server side
 if err := someFunction(); err != nil {
   cond := blunder.NewCondition().
-    ManyToOne([lowerLayerErr1, lowerLayerErr2], a.Err1).
+    ManyToOne([]error{lowerLayerErr1, lowerLayerErr2}, a.Err1).
     OneToOne(lowerLayerErr3, a.Err2) // some more cases
-  // return blunder.
+  return blunder.
         MatchCondition(err, cond).
         ReturnForGrpc()
 }
@@ -140,7 +140,7 @@ if err := rpc.Call(); err != nil {
 </td></tr>
 </tbody></table>
 
-### Case: do something detailed when error occurs
+### Case: do something detailed 
 Blunder can simply be used as `errors.Is` and `errors.As` to do something detailed.
 You can still use `MatchCondition` to handle errors that requiring the same operations.
 
@@ -170,7 +170,7 @@ if err := someFunction(); err != nil {
   if blunder.MatchCondition(err, cond).GetIsMatched() {
     doSomething()
     return nil, a.Err1
-  } else if blunder.Match(err, Err2).GetIsMatched() {
+  } else if blunder.Match(err, Err3).GetIsMatched() {
     doOtherthing()
   }
   return nil, blunder.ErrUndefined
