@@ -17,6 +17,12 @@ const (
 
 // CompleteErrorDetail completes the error detail with GPT-3
 func CompleteErrorDetail(errorCodes []string) ([]*model.ErrorDescription, error) {
+	if len(errorCodes) > 30 {
+		return nil, fmt.Errorf(
+			"due to the limitation of openai API, it is not recommended to generate more than 30 error codes at once, but got %d", len(errorCodes),
+		)
+	}
+
 	errorString := strings.Join(errorCodes[:], "#")
 	content := formatRequestString(errorString)
 
