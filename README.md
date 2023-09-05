@@ -26,7 +26,7 @@ It generate typed errors and manage them in centralized way, which reduce the de
     go run github.com/DenChenn/blunder gen --complete=true 
    ```
 
-## Usage [WIP]
+## Usage
 Suppose your errors in `blunder.yaml` are defined like this:
 ```yaml
 details:
@@ -46,4 +46,31 @@ details:
       #...
     - code: Err3
       #...
+```
+
+Your error will be generated in given path like this:
+```
+<your_dir_path>/
+generated/
+  alayer/ 
+    errors.go
+  blayer/
+    errors.go
+blunder.yaml
+```
+
+Which can be import into your code like this:
+```go
+if err != nil {
+  if errors.As(err, &alayer.Err1) {
+    //...
+  }
+}
+```
+
+Or you can wrap your error like this:
+```go
+if errors.As(err, &pgx.ErrNoRows) {
+  return &alayer.Err1.Wrap(err) 
+}
 ```
