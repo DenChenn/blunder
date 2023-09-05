@@ -50,7 +50,7 @@ details:
 
 Your error will be generated in given path like this:
 ```
-<your_dir_path>/
+<your_dir_path>/errors/
 generated/
   alayer/ 
     errors.go
