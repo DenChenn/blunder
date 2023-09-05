@@ -2,14 +2,17 @@
 
 package {{ .Package }}
 
-import (
-  . "github.com/DenChenn/blunder/pkg/blunder"
-)
+type {{ .Package }} struct {
+	HttpStatusCode int    `json:"http_status_code"`
+	GrpcStatusCode int    `json:"grpc_status_code"`
+	ErrorCode      string `json:"error_code"`
+	Message        string `json:"message"`
+	Err            error  `json:"err"`
+}
 
 var (
   {{- range .Errors }}
 	{{ .Code }} = &{{ $.Package }}{
-		Id:             "{{ .Id }}",
 		HttpStatusCode: {{ .HttpStatusCode }},
 		GrpcStatusCode: {{ .GrpcStatusCode }},
 		ErrorCode:      "{{ .Code }}",
@@ -20,24 +23,12 @@ var (
 
 var (
   {{- range .Errors }}
-	_ Error = {{ .Code }}
+	_ error = {{ .Code }}
 	{{- end }}
 )
 
-type {{ .Package }} struct {
-	Id             string `json:"id"`
-	HttpStatusCode int    `json:"http_status_code"`
-	GrpcStatusCode int    `json:"grpc_status_code"`
-	ErrorCode      string `json:"error_code"`
-	Message        string `json:"message"`
-}
-
 func (e *{{ .Package }}) Error() string {
 	return e.Message
-}
-
-func (e *{{ .Package }}) GetId() string {
-	return e.Id
 }
 
 func (e *{{ .Package }}) GetHttpStatusCode() int {
@@ -56,8 +47,10 @@ func (e *{{ .Package }}) GetMessage() string {
 	return e.Message
 }
 
-func (e *{{ .Package }}) WithCustomMessage(msg string) Error {
-	newE := *e
-	newE.Message = msg
-	return &newE
+func (e *{{ .Package }}) Wrap(err error) {
+	e.Err = err
+}
+
+func (e *{{ .Package }}) Unwrap() error {
+	return e.Err
 }
