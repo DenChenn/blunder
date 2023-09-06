@@ -95,7 +95,7 @@ var Gen = &cli.Command{
 
 			// generate id for this error according to file path + code
 			for i := range detail.Errors {
-				id := util.GetId(errorFilePath + detail.Errors[i].Code)
+				id := util.GenerateRandomId()
 				detail.Errors[i].Id = id
 			}
 
