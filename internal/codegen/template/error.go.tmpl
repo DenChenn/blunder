@@ -2,6 +2,10 @@
 
 package {{ .Package }}
 
+import (
+  "github.com/DenChenn/blunder/pkg/blunder"
+)
+
 type {{ .Package }} struct {
   Id             string `json:"id"`
 	HttpStatusCode int    `json:"http_status_code"`
@@ -14,7 +18,7 @@ type {{ .Package }} struct {
 var (
   {{- range .Errors }}
 	{{ .Code }} = &{{ $.Package }}{
-	  Id:             "{{ .Id }}",
+    Id:             "{{ .Id }}",
 		HttpStatusCode: {{ .HttpStatusCode }},
 		GrpcStatusCode: {{ .GrpcStatusCode }},
 		ErrorCode:      "{{ .Code }}",
@@ -26,6 +30,7 @@ var (
 var (
   {{- range .Errors }}
 	_ error = {{ .Code }}
+	_ blunder.OrdinaryError = {{ .Code }}
 	{{- end }}
 )
 
