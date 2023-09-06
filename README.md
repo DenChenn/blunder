@@ -62,7 +62,7 @@ blunder.yaml
 Which can be import into your code like this:
 ```go
 if err != nil {
-  if errors.As(err, &alayer.Err1) {
+  if errors.Is(err, &alayer.Err1) {
     //...
   }
 }
@@ -70,7 +70,7 @@ if err != nil {
 
 Or you can wrap your error like this:
 ```go
-if errors.As(err, &pgx.ErrNoRows) {
+if errors.Is(err, &pgx.ErrNoRows) {
   return &alayer.Err1.Wrap(err) 
 }
 ```
