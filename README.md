@@ -11,7 +11,13 @@ It generate typed errors and manage them in centralized way, which reduce the de
    ```bash
     go get github.com/DenChenn/blunder
    ```
-2. Initialize Blunder
+2. Import into your project
+   ```bash
+   printf '// +build tools\npackage tools\nimport (_ "github.com/DenChenn/blunder")' | gofmt > tools.go
+
+   go mod tidy
+   ```
+3. Initialize Blunder
    ```bash
     go run github.com/DenChenn/blunder init <your_dir_path>
    ```
