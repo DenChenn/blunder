@@ -60,3 +60,11 @@ func (e *{{ .Package }}) Wrap(err error) {
 func (e *{{ .Package }}) Unwrap() error {
 	return e.Err
 }
+
+func (e *{{ .Package }}) Is(err error) bool {
+  typedErr, ok := err.(*{{ .Package }})
+  if ok {
+    return typedErr.GetId() == e.GetId()
+  }
+  return false
+}
