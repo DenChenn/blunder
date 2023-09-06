@@ -80,3 +80,13 @@ if errors.Is(err, &pgx.ErrNoRows) {
   return &alayer.Err1.Wrap(err) 
 }
 ```
+
+## Type assertion
+All generated errors implement `blunder.OrdinaryError` interface, which contains static methods.
+
+```go
+ordinaryError, ok := err.(blunder.OrdinaryError)
+if ok {
+	fmt.Println(ordinaryError.GetId())
+}
+```
