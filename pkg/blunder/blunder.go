@@ -8,5 +8,4 @@ type OrdinaryError interface {
 	GetMessage() string
 	Wrap(err error)
 	Unwrap() error
-	Is(err error) bool
 }
