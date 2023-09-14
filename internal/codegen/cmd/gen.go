@@ -93,12 +93,6 @@ var Gen = &cli.Command{
 		for _, detail := range blunderConfig.Details {
 			errorFilePath := filepath.Join(generatedRootPath, detail.Package, constant.ErrorFileName)
 
-			// generate id for this error according to file path + code
-			for i := range detail.Errors {
-				id := util.GenerateRandomId()
-				detail.Errors[i].Id = id
-			}
-
 			if err := template.Generate(errorFilePath, constant.ErrorFileTemplateFileName, &detail); err != nil {
 				return util.PrintErrAndReturn(err.Error())
 			}

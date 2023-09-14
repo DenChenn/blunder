@@ -87,6 +87,6 @@ All generated errors implement `blunder.OrdinaryError` interface, which contains
 ```go
 ordinaryError, ok := err.(blunder.OrdinaryError)
 if ok {
-	fmt.Println(ordinaryError.GetId())
+	fmt.Println(ordinaryError.GetMessage())
 }
 ```

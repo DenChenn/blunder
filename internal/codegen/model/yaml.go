@@ -10,7 +10,6 @@ type Detail struct {
 }
 
 type ErrorDescription struct {
-	Id             string `yaml:"id"`
 	Code           string `yaml:"code"`
 	HttpStatusCode int    `yaml:"http_status_code"`
 	GrpcStatusCode int    `yaml:"grpc_status_code"`

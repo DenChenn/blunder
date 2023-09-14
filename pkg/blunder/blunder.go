@@ -2,7 +2,6 @@ package blunder
 
 type OrdinaryError interface {
 	Error() string
-	GetId() string
 	GetHttpStatusCode() int
 	GetGrpcStatusCode() int
 	GetErrorCode() string

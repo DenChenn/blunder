@@ -7,7 +7,6 @@ import (
 )
 
 type {{ .Package }} struct {
-  Id             string `json:"id"`
 	HttpStatusCode int    `json:"http_status_code"`
 	GrpcStatusCode int    `json:"grpc_status_code"`
 	ErrorCode      string `json:"error_code"`
@@ -18,7 +17,6 @@ type {{ .Package }} struct {
 var (
   {{- range .Errors }}
 	{{ .Code }} = &{{ $.Package }}{
-    Id:             "{{ .Id }}",
 		HttpStatusCode: {{ .HttpStatusCode }},
 		GrpcStatusCode: {{ .GrpcStatusCode }},
 		ErrorCode:      "{{ .Code }}",
@@ -36,10 +34,6 @@ var (
 
 func (e *{{ .Package }}) Error() string {
 	return e.Message
-}
-
-func (e *{{ .Package }}) GetId() string {
-  return e.Id
 }
 
 func (e *{{ .Package }}) GetHttpStatusCode() int {
@@ -64,12 +58,4 @@ func (e *{{ .Package }}) Wrap(err error) {
 
 func (e *{{ .Package }}) Unwrap() error {
 	return e.Err
-}
-
-func (e *{{ .Package }}) Is(err error) bool {
-  typedErr, ok := err.(*{{ .Package }})
-  if ok {
-    return typedErr.GetId() == e.GetId()
-  }
-  return false
 }
